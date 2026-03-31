@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVING by Palanca Fontestad | Abril 2026</title>
+<style>
+  :root {
+    --brand: #C8501A; --brand-light: #f0e8e2; --dark: #1a1a1a; --mid: #444;
+    --muted: #888; --border: #e8e4e0; --bg: #faf9f7; --white: #ffffff;
+    --serif: Georgia,'Times New Roman',serif; --sans: 'Helvetica Neue',Arial,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:var(--sans); background:var(--bg); color:var(--dark); overflow-x:hidden; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(26,26,26,0.96); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:space-between; padding:0 2.5rem; height:60px; }
+  .nav-logo { color:#fff; font-size:1rem; letter-spacing:0.3em; font-weight:300; text-transform:uppercase; }
+  .nav-logo span { color:var(--brand); }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a { color:rgba(255,255,255,0.7); text-decoration:none; font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--brand); }
+  .nav-cta { background:var(--brand); color:#fff; border:none; padding:0.45rem 1.2rem; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+  .hamburger span { display:block; width:22px; height:1.5px; background:#fff; }
+
+  .hero { height:100vh; min-height:600px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden; }
+  .hero-bg { position:absolute; inset:0; background-size:cover; background-position:center; }
+  .hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(10,6,2,0.5) 0%,rgba(10,6,2,0.88) 100%); }
+  .hero-content { position:relative; z-index:2; padding:2rem; }
+  .hero-edition { color:var(--brand); font-size:0.7rem; letter-spacing:0.4em; text-transform:uppercase; margin-bottom:1.5rem; }
+  .hero-title { font-size:clamp(4.5rem,12vw,10rem); color:#fff; font-weight:100; letter-spacing:0.15em; line-height:1; margin-bottom:0.3rem; }
+  .hero-subtitle { color:rgba(255,255,255,0.55); font-size:0.8rem; letter-spacing:0.45em; text-transform:uppercase; margin-bottom:3rem; }
+  .hero-tags { display:flex; flex-wrap:wrap; gap:1.5rem; justify-content:center; }
+  .hero-tag { color:rgba(255,255,255,0.85); font-size:0.75rem; display:flex; flex-direction:column; align-items:flex-start; }
+  .hero-tag strong { color:var(--brand); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.2rem; }
+  .scroll-hint { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.4); font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:0.6rem; }
+  .scroll-line { width:1px; height:40px; background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent); animation:scrollPulse 2s infinite; }
+  @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  section { padding:6rem 0; }
+  .container { max-width:1100px; margin:0 auto; padding:0 2rem; }
+  .section-label { color:var(--brand); font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; margin-bottom:1rem; display:block; }
+  .section-title { font-size:clamp(2rem,5vw,3.5rem); font-weight:300; line-height:1.1; margin-bottom:1.5rem; }
+  .section-title strong { font-weight:700; }
+  .divider { width:3rem; height:2px; background:var(--brand); margin:2rem 0; }
+
+  .editorial { background:var(--white); }
+  .editorial-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; }
+  .editorial-text p { color:var(--mid); line-height:1.85; margin-bottom:1.2rem; font-size:0.97rem; }
+  .editorial-quote { border-left:3px solid var(--brand); padding-left:1.5rem; margin:2rem 0; }
+  .editorial-quote p { font-size:1.15rem; line-height:1.65; color:var(--dark); font-style:italic; }
+
+  .equipo { background:var(--bg); }
+  .equipo-intro { max-width:600px; color:var(--mid); line-height:1.8; margin-bottom:3rem; }
+  .equipo-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:1.5rem; }
+  .miembro { text-align:center; }
+  .miembro img { width:100%; aspect-ratio:1; object-fit:cover; object-position:top; filter:grayscale(100%); transition:filter 0.3s; display:block; }
+  .miembro:hover img { filter:grayscale(0%); }
+  .miembro-name { font-size:0.72rem; font-weight:700; margin-top:0.6rem; line-height:1.3; }
+  .miembro-role { font-size:0.65rem; color:var(--brand); margin-top:0.15rem; }
+
+  .experto { background:var(--dark); }
+  .experto .section-title { color:#fff; }
+  .experto-img-full { width:100%; max-height:420px; object-fit:cover; object-position:center 30%; display:block; margin-bottom:4rem; opacity:0.4; }
+  .tips-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin-top:3rem; }
+  .tip-card { border:0.5px solid rgba(255,255,255,0.12); padding:2rem; transition:border-color 0.3s; }
+  .tip-card:hover { border-color:var(--brand); }
+  .tip-num { font-size:3rem; font-weight:800; color:var(--brand); opacity:0.6; line-height:1; margin-bottom:0.8rem; }
+  .tip-title { color:#fff; font-size:1rem; font-weight:600; margin-bottom:0.8rem; }
+  .tip-text { color:rgba(255,255,255,0.6); font-size:0.88rem; line-height:1.75; }
+  .experto-author { display:flex; align-items:center; gap:2rem; margin-top:3.5rem; padding-top:3rem; border-top:0.5px solid rgba(255,255,255,0.12); }
+  .experto-author img { width:80px; height:80px; border-radius:50%; object-fit:cover; object-position:top; filter:grayscale(100%); flex-shrink:0; }
+  .author-info p { color:rgba(255,255,255,0.5); font-size:0.8rem; }
+  .author-info strong { color:#fff; font-size:1rem; display:block; margin-bottom:0.2rem; }
+  .author-cta { margin-left:auto; background:none; border:1px solid var(--brand); color:var(--brand); padding:0.6rem 1.4rem; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .author-cta:hover { background:var(--brand); color:#fff; }
+
+  .lifestyle { background:var(--bg); }
+  .lifestyle-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+  .lifestyle-text p { color:var(--mid); line-height:1.85; margin-bottom:1.2rem; font-size:0.97rem; }
+  .lifestyle-pull { background:var(--brand); color:#fff; padding:2rem; margin:2rem 0; }
+  .lifestyle-pull p { font-size:1.1rem; line-height:1.6; font-style:italic; }
+  .lifestyle-img { height:520px; overflow:hidden; position:relative; }
+  .lifestyle-img img { width:100%; height:100%; object-fit:cover; display:block; }
+  .lifestyle-img-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top,rgba(0,0,0,0.8),transparent); padding:2rem 1.5rem 1.5rem; }
+  .lifestyle-img-label h3 { color:#fff; font-size:1.2rem; font-weight:700; }
+  .lifestyle-img-label p { color:rgba(255,255,255,0.7); font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; }
+
+  .featured { background:var(--white); }
+  .featured-hero { display:grid; grid-template-columns:1fr 1fr; gap:0; min-height:500px; border:0.5px solid var(--border); margin-top:2.5rem; }
+  .featured-imgs { display:grid; grid-template-rows:1fr 1fr; gap:2px; overflow:hidden; position:relative; }
+  .featured-imgs img { width:100%; height:100%; object-fit:cover; display:block; }
+  .featured-badge { position:absolute; top:1.5rem; left:1.5rem; background:var(--brand); color:#fff; font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; padding:0.4rem 0.8rem; z-index:1; }
+  .featured-info { padding:3.5rem; display:flex; flex-direction:column; justify-content:center; }
+  .featured-location { color:var(--brand); font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:1rem; }
+  .featured-title { font-size:1.8rem; font-weight:300; line-height:1.2; margin-bottom:0.5rem; }
+  .featured-title strong { font-weight:700; }
+  .featured-desc { color:var(--mid); font-size:0.9rem; line-height:1.75; margin-bottom:2rem; }
+  .featured-price { font-size:2.2rem; font-weight:700; color:var(--dark); margin-bottom:1rem; }
+  .featured-specs { display:flex; flex-wrap:wrap; gap:0.8rem; margin-bottom:2rem; }
+  .spec { background:var(--bg); padding:0.4rem 0.9rem; font-size:0.78rem; color:var(--mid); border:0.5px solid var(--border); }
+  .featured-btn { background:var(--brand); color:#fff; border:none; padding:0.85rem 2rem; font-size:0.8rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; width:fit-content; transition:background 0.2s; }
+  .featured-btn:hover { background:#a83d12; }
+  .featured-pool { width:100%; height:260px; object-fit:cover; display:block; }
+
+  .coleccion { background:var(--bg); }
+  .props-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+  .prop-card { background:var(--white); border:0.5px solid var(--border); overflow:hidden; transition:transform 0.2s,box-shadow 0.2s; cursor:pointer; }
+  .prop-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.1); }
+  .prop-img { height:180px; overflow:hidden; background:#d0c4b8; }
+  .prop-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+  .prop-card:hover .prop-img img { transform:scale(1.04); }
+  .prop-body { padding:1.2rem; }
+  .prop-location { font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem; }
+  .prop-specs { color:var(--muted); font-size:0.78rem; margin-bottom:0.8rem; }
+  .prop-price { color:var(--brand); font-size:1.1rem; font-weight:700; }
+  .prop-ref { font-size:0.7rem; color:var(--muted); margin-top:0.2rem; }
+
+  .proyectos { background:#1a1a1a; }
+  .proyectos .section-title { color:#fff; }
+  .proyectos-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:3rem; }
+  .proyecto-card { background:#252525; border:0.5px solid #333; overflow:hidden; transition:border-color 0.3s; }
+  .proyecto-card:hover { border-color:var(--brand); }
+  .proyecto-img { height:220px; overflow:hidden; }
+  .proyecto-img img { width:100%; height:100%; object-fit:cover; opacity:0.85; display:block; transition:transform 0.4s,opacity 0.3s; }
+  .proyecto-card:hover .proyecto-img img { transform:scale(1.04); opacity:1; }
+  .proyecto-body { padding:1.8rem; }
+  .proyecto-name { color:#fff; font-size:1.1rem; font-weight:700; letter-spacing:0.05em; margin-bottom:0.3rem; }
+  .proyecto-tagline { color:var(--brand); font-size:0.75rem; font-style:italic; margin-bottom:1rem; }
+  .proyecto-desc { color:rgba(255,255,255,0.55); font-size:0.85rem; line-height:1.75; }
+  .proyecto-tag { display:inline-block; background:var(--brand); color:#fff; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; padding:0.3rem 0.7rem; margin-top:1rem; }
+
+  .market { background:var(--white); }
+  .market-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin:3rem 0; }
+  .market-stat { text-align:center; padding:2.5rem 1rem; border:0.5px solid var(--border); }
+  .market-stat-value { font-size:clamp(2rem,5vw,3rem); font-weight:800; color:var(--brand); line-height:1; margin-bottom:0.5rem; }
+  .market-stat-label { font-size:0.78rem; color:var(--muted); line-height:1.5; }
+  .market-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+  .market-item h3 { font-size:1rem; font-weight:700; margin-bottom:0.8rem; padding-bottom:0.8rem; border-bottom:2px solid var(--brand); display:inline-block; }
+  .market-item p { color:var(--mid); font-size:0.9rem; line-height:1.8; }
+
+  .exito { background:var(--bg); }
+  .exito-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+  .exito-card { background:var(--white); border:0.5px solid var(--border); overflow:hidden; position:relative; }
+  .exito-img { height:160px; overflow:hidden; background:#c8b8a8; }
+  .exito-img img { width:100%; height:100%; object-fit:cover; filter:saturate(0.4); display:block; }
+  .vendido-badge { position:absolute; top:0.8rem; left:0.8rem; background:var(--brand); color:#fff; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; padding:0.25rem 0.6rem; }
+  .exito-body { padding:1rem 1.2rem; }
+  .exito-location { font-weight:700; font-size:0.85rem; letter-spacing:0.08em; margin-bottom:0.3rem; }
+  .exito-specs { color:var(--muted); font-size:0.78rem; }
+
+  .foios { background:var(--dark); overflow:hidden; }
+  .foios-inner { display:grid; grid-template-columns:1fr 1.2fr; gap:0; min-height:600px; }
+  .foios-img { position:relative; overflow:hidden; }
+  .foios-img img { width:100%; height:100%; object-fit:cover; opacity:0.5; display:block; }
+  .foios-img-overlay { position:absolute; inset:0; background:linear-gradient(to right,transparent,#1a1a1a 80%); }
+  .foios-content { padding:4rem 3.5rem; display:flex; flex-direction:column; justify-content:center; }
+  .foios .section-title { color:#fff; font-size:clamp(1.8rem,4vw,3rem); }
+  .foios-items { display:flex; flex-direction:column; gap:2rem; margin-top:2rem; }
+  .foios-item { border-left:2px solid rgba(200,80,26,0.4); padding-left:1.5rem; }
+  .foios-item h3 { color:#fff; font-size:0.9rem; font-weight:700; margin-bottom:0.4rem; }
+  .foios-item p { color:rgba(255,255,255,0.55); font-size:0.85rem; line-height:1.7; }
+  .foios-address { margin-top:2.5rem; padding:1.5rem; background:rgba(200,80,26,0.15); border:1px solid rgba(200,80,26,0.3); }
+  .foios-address p { color:rgba(255,255,255,0.8); font-size:0.85rem; line-height:1.7; }
+  .foios-address strong { color:var(--brand); }
+
+  .testimonios { background:var(--white); }
+  .test-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:3rem; }
+  .test-card { padding:2rem; border:0.5px solid var(--border); position:relative; }
+  .test-card::before { content:'\201C'; position:absolute; top:1rem; right:1.5rem; font-size:5rem; line-height:1; color:var(--brand-light); font-family:var(--serif); }
+  .test-stars { color:var(--brand); font-size:0.9rem; margin-bottom:1rem; }
+  .test-text { color:var(--mid); font-size:0.88rem; line-height:1.8; margin-bottom:1.5rem; font-style:italic; }
+  .test-author { font-weight:700; font-size:0.85rem; }
+  .test-agent { color:var(--brand); font-size:0.78rem; margin-top:0.2rem; }
+
+  .contacto { background:var(--dark); }
+  .contacto .section-title { color:#fff; }
+  .oficinas-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; margin:3rem 0; }
+  .oficina { border:0.5px solid rgba(255,255,255,0.12); padding:1.8rem; transition:border-color 0.3s; }
+  .oficina:hover { border-color:var(--brand); }
+  .oficina-name { color:var(--brand); font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:0.6rem; }
+  .oficina-addr { color:rgba(255,255,255,0.65); font-size:0.85rem; line-height:1.6; }
+  .contact-bottom { display:flex; align-items:center; justify-content:space-between; padding-top:3rem; border-top:0.5px solid rgba(255,255,255,0.1); }
+  .contact-info { color:rgba(255,255,255,0.5); font-size:0.85rem; }
+  .contact-info a { color:var(--brand); text-decoration:none; }
+  .logo-footer img { height:40px; filter:brightness(0) invert(1); }
+
+  footer { background:#111; padding:2rem; text-align:center; color:rgba(255,255,255,0.3); font-size:0.75rem; letter-spacing:0.1em; }
+
+  @media (max-width:900px) {
+    .nav-links { display:none; }
+    .nav-links.open { display:flex; flex-direction:column; position:fixed; top:60px; left:0; right:0; background:rgba(26,26,26,0.98); padding:2rem; gap:1.5rem; }
+    .hamburger { display:flex; }
+    .editorial-grid,.lifestyle-grid,.featured-hero,.foios-inner,.market-grid { grid-template-columns:1fr; }
+    .tips-grid,.props-grid,.proyectos-grid,.exito-grid,.test-grid { grid-template-columns:1fr 1fr; }
+    .oficinas-grid { grid-template-columns:1fr 1fr; }
+    .equipo-grid { grid-template-columns:repeat(4,1fr); }
+    .market-stats { grid-template-columns:repeat(3,1fr); }
+  }
+  @media (max-width:580px) {
+    section { padding:4rem 0; }
+    .tips-grid,.props-grid,.proyectos-grid,.exito-grid,.test-grid,.oficinas-grid,.market-stats { grid-template-columns:1fr; }
+    .equipo-grid { grid-template-columns:repeat(3,1fr); }
+    .contact-bottom { flex-direction:column; gap:1rem; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-logo">LIVING <span>·</span> Palanca Fontestad</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#editorial">Editorial</a></li>
+    <li><a href="#equipo">Equipo</a></li>
+    <li><a href="#experto">Experto</a></li>
+    <li><a href="#coleccion">Propiedades</a></li>
+    <li><a href="#proyectos">Obra Nueva</a></li>
+    <li><a href="#foios">Foios</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.open('tel:961490135')">Llamar ahora</button>
+  <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg" style="background-image:url('https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/hero-portada_iyqwxy')"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-edition">Edición Abril 2026</p>
+    <h1 class="hero-title">LIVING</h1>
+    <p class="hero-subtitle">by Palanca Fontestad</p>
+    <div class="hero-tags">
+      <div class="hero-tag"><strong>El Éxodo a la Luz</strong>La terraza es el nuevo salón</div>
+      <div class="hero-tag"><strong>Vender para Comprar</strong>El momento exacto del salto</div>
+      <div class="hero-tag"><strong>Haciendo Barrio</strong>Foios: la huerta abraza el futuro</div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Descubrir</div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="editorial" id="editorial">
+  <div class="container">
+    <div class="editorial-grid">
+      <div class="editorial-text">
+        <span class="section-label">Editorial</span>
+        <h2 class="section-title">La luz que transforma <strong>nuestros hogares</strong></h2>
+        <div class="divider"></div>
+        <p>Dejamos atrás la intensidad y la emoción de las Fallas para dar la bienvenida a la que, sin duda, es nuestra época favorita del año en Valencia: la primavera. Con el cambio de hora y los días alargándose, nuestra comarca se transforma por completo.</p>
+        <p>La luz inunda nuestras calles, la huerta recupera su verde más intenso y todos sentimos esa necesidad instintiva de disfrutar del aire libre.</p>
+        <div class="editorial-quote">
+          <p>Si estás valorando vender tu propiedad, no hay mejor escaparate que la primavera. Una vivienda iluminada por el sol de abril se vende más rápido y defiende un precio mayor.</p>
+        </div>
+        <p>Hoy en día, el comprador no solo adquiere metros cuadrados; compra la ilusión de poder cenar en su propia terraza este mismo verano.</p>
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-top:2rem">
+          <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/bosses-bn_t83q32" alt="CEOs" style="width:130px;filter:grayscale(100%) contrast(1.1)">
+          <div>
+            <strong style="display:block;font-size:0.92rem">Jose Miguel &amp; Javier Palanca Fontestad</strong>
+            <span style="color:var(--brand);font-size:0.75rem">CEOs de RK Palanca Fontestad</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/editorial-primavera_zjkzvn" alt="Primavera en L'Horta Nord" style="width:100%;display:block">
+        <div style="margin-top:2rem;padding:2rem;background:var(--bg);border-left:3px solid var(--brand)">
+          <p style="font-size:0.85rem;color:var(--mid);line-height:1.8">Desde nuestras oficinas en <strong>Foios, Meliana, Massamagrell</strong> y <strong>Tavernes Blanques</strong>, 35 especialistas comprometidos con tu experiencia inmobiliaria.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section class="equipo" id="equipo">
+  <div class="container">
+    <span class="section-label">El Equipo</span>
+    <h2 class="section-title">Los rostros de <strong>la excelencia</strong></h2>
+    <div class="divider"></div>
+    <p class="equipo-intro">Detrás de cada operación de éxito en Valencia y área metropolitana, 35 especialistas comprometidos con un único objetivo: proteger tus intereses y elevar tu experiencia inmobiliaria.</p>
+    <div class="equipo-grid" id="equipoGrid"></div>
+  </div>
+</section>
+
+<!-- EXPERTO -->
+<section class="experto" id="experto">
+  <div class="container">
+    <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/experto-recibidor_kkzg8s" alt="Recibidor" class="experto-img-full">
+    <span class="section-label">El Rincón del Experto</span>
+    <h2 class="section-title">La regla de los <strong>90 Segundos</strong></h2>
+    <div class="divider"></div>
+    <p style="color:rgba(255,255,255,0.6);max-width:640px;line-height:1.8;font-size:0.95rem">Los estudios inmobiliarios lo confirman: un comprador decide si le gusta una casa o no en el primer minuto y medio de visita. No compramos ladrillos, compramos la sensación de imaginarnos viviendo allí.</p>
+    <div class="tips-grid">
+      <div class="tip-card"><div class="tip-num">01</div><div class="tip-title">El recibidor es tu apretón de manos</div><p class="tip-text">El recibidor debe ser un espacio de transición limpio y despejado. Enciende siempre la luz de la entrada aunque sea de día. Da una sensación inmediata de calidez y amplitud.</p></div>
+      <div class="tip-card"><div class="tip-num">02</div><div class="tip-title">El marketing invisible: Temperatura y Olfato</div><p class="tip-text">Quince minutos antes de la visita, ventila toda la casa. El olor a café recién hecho conecta directamente con la parte emocional del cerebro del comprador.</p></div>
+      <div class="tip-card"><div class="tip-num">03</div><div class="tip-title">El poder de dar un paso atrás</div><p class="tip-text">El mejor favor que le puedes hacer a la venta es no estar presente durante la visita. El comprador necesita sentirse libre para "probarse" la casa sin sentirse vigilado.</p></div>
+    </div>
+    <div class="experto-author">
+      <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/carles_fs0giu" alt="Carles Navarro">
+      <div class="author-info"><strong>Carles Navarro</strong><p>Asesor Inmobiliario de Obra Nueva</p></div>
+      <button class="author-cta" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contactar con Carles ↗</button>
+    </div>
+  </div>
+</section>
+
+<!-- LIFESTYLE -->
+<section class="lifestyle" id="lifestyle">
+  <div class="container">
+    <div class="lifestyle-grid">
+      <div class="lifestyle-text">
+        <span class="section-label">Lifestyle</span>
+        <h2 class="section-title">El Éxodo a la Luz: <strong>La terraza es el nuevo salón</strong></h2>
+        <div class="divider"></div>
+        <p>Con la llegada de abril y el estallido de la primavera, algo cambia en nuestra forma de vivir. Las familias ya no solo buscan metros cuadrados bajo techo; buscan espacios donde la vida pueda fluir hacia el exterior.</p>
+        <div class="lifestyle-pull"><p>"Ya no compramos casas con terraza; buscamos terrazas que traigan una casa pegada. Es una inversión directa en nuestro bienestar diario."</p></div>
+        <p>L'Horta Nord se ha convertido en el destino natural para quienes desean esa calidad de vida sin renunciar a la cercanía de Valencia capital.</p>
+      </div>
+      <div class="lifestyle-img">
+        <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/lifestyle-terraza_wymty1" alt="Terraza mediterránea">
+        <div class="lifestyle-img-label"><p>Lifestyle</p><h3>La terraza es el nuevo salón</h3></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured" id="featured">
+  <div class="container">
+    <span class="section-label">Propiedad Destacada · Exclusiva</span>
+    <h2 class="section-title">El refugio de luz que <strong>estabas esperando</strong></h2>
+    <div class="divider"></div>
+    <div class="featured-hero">
+      <div class="featured-imgs">
+        <div class="featured-badge">Exclusiva · El Vedat</div>
+        <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/vedat-interior1_rqbnpx" alt="Interior El Vedat">
+        <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/vedat-interior2_scv5wz" alt="Interior El Vedat 2">
+      </div>
+      <div class="featured-info">
+        <p class="featured-location">El Vedat · Torrent · Valencia</p>
+        <h3 class="featured-title">El refugio de luz<br><strong>que estabas esperando</strong></h3>
+        <p class="featured-desc">Propiedad de 246 m² que redefine el concepto de calidad de vida. Su salón comedor fluye de manera natural hacia una terraza espectacular, el escenario perfecto para tus momentos en familia.</p>
+        <div class="featured-price">825.000 €</div>
+        <div class="featured-specs">
+          <span class="spec">246 m²</span><span class="spec">4 Habitaciones</span><span class="spec">3 Baños</span><span class="spec">1 Garaje</span><span class="spec">2 Terrazas</span>
+        </div>
+        <button class="featured-btn" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Agenda tu visita privada</button>
+      </div>
+    </div>
+    <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/rR8qlU_ecu4qj" alt="Piscina El Vedat" class="featured-pool" style="margin-top:2px">
+  </div>
+</section>
+
+<!-- COLECCIÓN -->
+<section class="coleccion" id="coleccion">
+  <div class="container">
+    <span class="section-label">Selección Exclusiva</span>
+    <h2 class="section-title">Colección <strong>Privada</strong></h2>
+    <div class="divider"></div>
+    <div class="props-grid" id="propsGrid"></div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section class="proyectos" id="proyectos">
+  <div class="container">
+    <span class="section-label">Proyectos de Vanguardia</span>
+    <h2 class="section-title">El futuro <strong>del hogar</strong></h2>
+    <div class="divider"></div>
+    <div class="proyectos-grid" id="proyectosGrid"></div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section class="market" id="market">
+  <div class="container">
+    <span class="section-label">Market Data</span>
+    <h2 class="section-title">El pulso del <strong>mercado</strong></h2>
+    <div class="divider"></div>
+    <div class="market-stats">
+      <div class="market-stat"><div class="market-stat-value">+14,5%</div><div class="market-stat-label">Crecimiento interanual récord en 2025</div></div>
+      <div class="market-stat"><div class="market-stat-value">5.236€</div><div class="market-stat-label">Precio medio m² en La Patacona (2026)</div></div>
+      <div class="market-stat"><div class="market-stat-value">+2.200</div><div class="market-stat-label">Nuevas viviendas en desarrollo</div></div>
+    </div>
+    <div class="market-grid">
+      <div class="market-item"><h3>La polarización premium de Alboraya</h3><p>La Patacona supera los 5.200 €/m² consolidándose como enclave prime de inversión internacional. Tras el impacto de la DANA y picos del 14,5% en 2025, el mercado entra en "aterrizaje suave" para 2026. Las bajadas de precio resultan improbables ante la escasez crónica de oferta.</p></div>
+      <div class="market-item"><h3>Regulación turística y renovación urbana</h3><p>El marco regulatorio sobre VUT implantado en 2025 ha pivotado el capital inversor hacia el alquiler de temporada. Los desarrollos del PRI Vinival y PAI Vera 2 inyectarán más de 2.200 inmuebles, transformando la zona en ecobarrios sostenibles de primer nivel.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ÉXITOS -->
+<section class="exito" id="exito">
+  <div class="container">
+    <span class="section-label">Casos de Éxito · Marzo 2026</span>
+    <h2 class="section-title">Historias cerradas <strong>con éxito</strong></h2>
+    <div class="divider"></div>
+    <div class="exito-grid" id="exitoGrid"></div>
+  </div>
+</section>
+
+<!-- FOIOS -->
+<section class="foios" id="foios">
+  <div class="foios-inner">
+    <div class="foios-img">
+      <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/foios-pueblo_tnyp3h" alt="Foios, L'Horta Nord">
+      <div class="foios-img-overlay"></div>
+    </div>
+    <div class="foios-content">
+      <span class="section-label">Fent Poble</span>
+      <h2 class="section-title">FOIOS<br><span style="font-weight:300">Donde la huerta<br>abraza el futuro</span></h2>
+      <div class="divider"></div>
+      <div class="foios-items">
+        <div class="foios-item"><h3>La Plaza — El punto de encuentro</h3><p>Centro neurálgico de la vida social de Foios. Tomar un café bajo la mirada de la Iglesia de la Asunción es uno de esos placeres sencillos que definen el día a día aquí.</p></div>
+        <div class="foios-item"><h3>Sabor Local — El placer del 'Esmorzaret'</h3><p>El municipio es famoso por sus hornos tradicionales. El producto de proximidad, directo de la huerta vecina, llega a la mesa con una frescura imbatible.</p></div>
+        <div class="foios-item"><h3>Vida Activa — La Vía Xurra</h3><p>Antigua vía de tren convertida en vía verde que permite conectar con los pueblos vecinos en bici o andando, respirando el aire puro de la huerta.</p></div>
+      </div>
+      <div class="foios-address"><p><strong>Nacimos en estas calles y conocemos cada rincón de Foios.</strong><br>Pásate por nuestra oficina en <strong>Av. Hugo Bacharach, 28</strong>. Estamos en casa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="testimonios" id="testimonios">
+  <div class="container">
+    <span class="section-label">La Voz de Nuestros Clientes</span>
+    <h2 class="section-title">Lo que dicen <strong>de nosotros</strong></h2>
+    <div class="divider"></div>
+    <div class="test-grid">
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Son muy profesionales y se toman todo el tiempo necesario para que entiendas todos los procesos. Hemos valorado mucho la transparencia y comunicación abierta. Se nota que saben mantener una política muy profesional y servicial de cara al cliente."</p><p class="test-author">Ricardo Geis</p><p class="test-agent">Agente: María José Ordoñez</p></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Tuvimos la suerte de contar con Desirée como agente. Nos ha ayudado muchísimo desde el primer momento, explicándolo todo con claridad, sencillez y profesionalidad. Ha estado acompañándonos hasta el final del proceso."</p><p class="test-author">Tatiana Giner</p><p class="test-agent">Agente: Desirée López</p></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Nos atendió Carles Navarro para informarnos sobre Brises d'Albalat y el trato fue muy bueno. Fue amable, cercano y nos explicó todo con claridad. ¡Recomendable!"</p><p class="test-author">Maria M.</p><p class="test-agent">Agente: Carles Navarro</p></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Durante todo el proceso se mantuvo siempre en contacto con nosotros, con respuestas muy rápidas y claras. Defendió en todo momento nuestros intereses como vendedores, lo que nos dio mucha tranquilidad."</p><p class="test-author">Oksana Rudinskaya</p><p class="test-agent">Agente: Lorena Lull</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="container">
+    <span class="section-label">Nuestras Oficinas</span>
+    <h2 class="section-title" style="color:#fff">El lujo de sentirse <strong>en casa</strong></h2>
+    <div class="divider"></div>
+    <div class="oficinas-grid">
+      <div class="oficina"><p class="oficina-name">Foios</p><p class="oficina-addr">Av. Hugo Bacharach, 28</p></div>
+      <div class="oficina"><p class="oficina-name">Massamagrell</p><p class="oficina-addr">Av. València, 20</p></div>
+      <div class="oficina"><p class="oficina-name">Meliana</p><p class="oficina-addr">Av. Santa María, 46</p></div>
+      <div class="oficina"><p class="oficina-name">Tavernes Blanques</p><p class="oficina-addr">C/ Dr. Gómez i Ferrer, 1</p></div>
+    </div>
+    <div class="contact-bottom">
+      <div class="contact-info">
+        <p>📞 <a href="tel:961490135">961 49 01 35</a> &nbsp;·&nbsp; ✉ <a href="mailto:info@inmobiliariapalanca.com">info@inmobiliariapalanca.com</a></p>
+        <p style="margin-top:0.4rem"><a href="https://www.inmobiliariapalanca.com" target="_blank">www.inmobiliariapalanca.com</a></p>
+      </div>
+      <div class="logo-footer">
+        <img src="https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/logo-rk_nwfp1j" alt="RK Palanca Fontestad">
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><p>&copy; 2026 RK Palanca Fontestad by Realmark Inmobiliaria &nbsp;·&nbsp; LIVING Abril 2026</p></footer>
+
+<script>
+const CDN = 'https://res.cloudinary.com/drg0i7fjp/image/upload/living-abril/';
+
+// EQUIPO — nombres exactos de Cloudinary
+const equipo = [
+  {f:'jose-miguel_uxrm7d',    n:'Jose Miguel Palanca',       r:'CEO'},
+  {f:'javier-palanca_un2lav', n:'Javier Palanca',            r:'CEO'},
+  {f:'mar-moscardo_ue8juy',   n:'Mar Moscardo',              r:'Administración'},
+  {f:'julia-ordonez_mzh8mp',  n:'Julia Ordoñez',             r:'Administración'},
+  {f:'mireia_ppqlii',         n:'Mireia Saez',               r:'Administración'},
+  {f:'almudena_vdzwiq',       n:'Almudena Gálvez',           r:'Administración'},
+  {f:'veronica_d4ugqe',       n:'Verónica Fortea',           r:'Administración'},
+  {f:'marivi_z4fq8m',         n:'Marivi Gil',                r:'Administración'},
+  {f:'ros_ccajaj',            n:'Ros Aguilar',               r:'Administración'},
+  {f:'roberto_ypzhm3',        n:'Roberto Arroyo',            r:'Marketing · IA'},
+  {f:'unknown1_znyldo',       n:'Andrea Máñez',              r:'Fotógrafa / Home Stager'},
+  {f:'rosa_cp6tch',           n:'Rosa Doménech',             r:'Asesora Inmobiliaria'},
+  {f:'amparo_yxwhiy',         n:'Amparo Orts',               r:'Asesora Inmobiliaria'},
+  {f:'unknown2_qv4q8d',       n:'Alejandro García',          r:'Asesor Inmobiliario'},
+  {f:'sefa_yzyeda',           n:'Sefa Gallent',              r:'Asesora Inmobiliaria'},
+  {f:'asun_aabeqj',           n:'Asun Marco',                r:'Asesora Inmobiliaria'},
+  {f:'maria-luisa_ybieou',    n:'Mª Luisa Bellver',          r:'Asesora Inmobiliaria'},
+  {f:'unknown2_qv4q8d',       n:'Claudia Stelling',          r:'Asesora Inmobiliaria'},
+  {f:'jose-gimenez_gqltai',   n:'Jose Giménez',              r:'Asesor Inmobiliario'},
+  {f:'natalia_igd3zl',        n:'Natalia Sanfélix',          r:'Asesora Inmobiliaria'},
+  {f:'mavi_zg5gi6',           n:'Mavi Castillo',             r:'Asesora Inmobiliaria'},
+  {f:'maria-jose_pzraei',     n:'Mª José Ordoñez',           r:'Asesora Inmobiliaria'},
+  {f:'unknown1_znyldo',       n:'Inma Frasquet',             r:'Obra Nueva'},
+  {f:'desiree_zybkoa',        n:'Desiree López',             r:'Asesora · Magnos'},
+  {f:'alicia_hqpi5h',         n:'Alicia Barberá',            r:'Obra Nueva'},
+  {f:'unknown2_qv4q8d',       n:'José González',             r:'Obra Nueva'},
+  {f:'clara_fs0giu',          n:'Clara Ordoñez',             r:'Asesora Inmobiliaria'},
+  {f:'fran_anvbzf',           n:'Fran Estellés',             r:'Asesor Inmobiliario'},
+  {f:'maria_ovhn9g',          n:'Eva Valles',                r:'Asesora Inmobiliaria'},
+  {f:'unknown1_znyldo',       n:'Lorena Lull',               r:'Asesora Inmobiliaria'},
+  {f:'fede-carbonell_pyjlus', n:'Fede Carbonell',            r:'Asesor Inmobiliario'},
+  {f:'carles_fs0giu',         n:'Carles Navarro',            r:'Obra Nueva'},
+  {f:'jose-manuel_ne2dqe',    n:'Jose Manuel Lafuente',      r:'Obra Nueva'},
+];
+
+document.getElementById('equipoGrid').innerHTML = equipo.map(m =>
+  `<div class="miembro">
+    <img src="${CDN}${m.f}" alt="${m.n}" loading="lazy">
+    <p class="miembro-name">${m.n}</p>
+    <p class="miembro-role">${m.r}</p>
+  </div>`
+).join('');
+
+// PROPIEDADES
+const props = [
+  {f:'prop-pobla-farnals_o8nwdo', loc:'La Pobla de Farnals',    specs:'3 Hab. · 1 Baño · 79 m²',            price:'240.000 €', ref:'05383'},
+  {f:'DHvxxl_lu0sc4',             loc:'Alfafar',                 specs:'1 Hab. · 1 Baño · 60 m²',            price:'179.900 €', ref:'05400'},
+  {f:'gemini-extra2_ki666p',      loc:'Valencia · Els Orriols',  specs:'2 Hab. · 1 Baño · 53 m²',            price:'160.000 €', ref:'05404'},
+  {f:'prop-cullera_i8xqez',       loc:'Cullera',                 specs:'3 Hab. · 3 Baños · 156 m² · Piscina', price:'315.000 €', ref:'05399'},
+  {f:'prop-bonrepos_pc5buo',      loc:'Meliana',                 specs:'3 Hab. · 2 Baños · 89 m²',           price:'149.000 €', ref:'05411'},
+  {f:'gemini-extra1_ro9gco',      loc:'Bonrepòs i Mirambell',    specs:'2 Hab. · 2 Baños · 80 m²',           price:'215.000 €', ref:'05341'},
+];
+document.getElementById('propsGrid').innerHTML = props.map(p =>
+  `<div class="prop-card">
+    <div class="prop-img"><img src="${CDN}${p.f}" alt="${p.loc}" loading="lazy"></div>
+    <div class="prop-body">
+      <p class="prop-location">${p.loc}</p>
+      <p class="prop-specs">${p.specs}</p>
+      <p class="prop-price">${p.price}</p>
+      <p class="prop-ref">Ref. ${p.ref}</p>
+    </div>
+  </div>`
+).join('');
+
+// PROYECTOS
+const proyectos = [
+  {f:'proyecto-calderona_ab1ebq',   n:'CALDERONA HOMES',    tag:'Diseño de vanguardia a un paso de la ciudad',    desc:'Exclusivo complejo de 159 viviendas en Massamagrell. Inmensas terrazas, espectaculares áticos y acabados de alta gama personalizables.',                                  badge:'Disponible',       bc:'var(--brand)'},
+  {f:'infografia-exterior_uz1cuz',  n:'SAGUNTO FUSION',     tag:'El estilo de vida que siempre has buscado',      desc:'Moderno complejo de 285 viviendas VPP. Espacios de 1 a 3 dormitorios, grandes terrazas privadas y garaje incluido en el nuevo epicentro de Sagunto.',         badge:'Lista VIP',        bc:'var(--brand)'},
+  {f:'proyecto-horta-foios_edsw39', n:'HORTA HABITAT FOIOS',tag:'Descubre la verdadera calidad de vida en Foios', desc:'Exclusivo residencial rodeado de naturaleza. Calificación energética A, cocinas de diseño abierto y metro a un paso de Valencia.',                           badge:'Últimas unidades', bc:'#a83d12'},
+  {f:'salon-cocina_kqldut',         n:'BRISES III',         tag:'Luz, diseño y terrazas panorámicas',             desc:'18 viviendas de estilo moderno. Espectaculares áticos con terraza privada y espacios de concepto abierto, a un paso de la costa y de la capital.',            badge:'Disponible',       bc:'var(--brand)'},
+];
+document.getElementById('proyectosGrid').innerHTML = proyectos.map(p =>
+  `<div class="proyecto-card">
+    <div class="proyecto-img"><img src="${CDN}${p.f}" alt="${p.n}" loading="lazy"></div>
+    <div class="proyecto-body">
+      <p class="proyecto-name">${p.n}</p>
+      <p class="proyecto-tagline">${p.tag}</p>
+      <p class="proyecto-desc">${p.desc}</p>
+      <span class="proyecto-tag" style="background:${p.bc}">${p.badge}</span>
+    </div>
+  </div>`
+).join('');
+
+// ÉXITOS
+const exitos = [
+  {f:'exito-naquera_hqvjmj',      loc:'Sagunto',          specs:'3 Hab. · 2 Baños · 76 m²'},
+  {f:'exito-almassera2_gesu0r',   loc:'Almàssera',        specs:'2 Hab. · 1 Baño · 68 m²'},
+  {f:'exito-naquera_hqvjmj',      loc:'Náquera',          specs:'3 Hab. · 1 Baño · 172 m²'},
+  {f:'exito-tavernes_mfcnyu',     loc:'Tavernes Blanques',specs:'3 Hab. · 1 Baño · 103 m²'},
+  {f:'exito-almassera2_gesu0r',   loc:'Almàssera',        specs:'7 Hab. · 4 Baños · 261 m²'},
+  {f:'exito-massamagrell_x5t39s', loc:'Massamagrell',     specs:'3 Hab. · 2 Baños · 120 m²'},
+];
+document.getElementById('exitoGrid').innerHTML = exitos.map(e =>
+  `<div class="exito-card">
+    <div class="exito-img"><img src="${CDN}${e.f}" alt="${e.loc}" loading="lazy"></div>
+    <div class="vendido-badge">Vendido</div>
+    <div class="exito-body">
+      <p class="exito-location">${e.loc}</p>
+      <p class="exito-specs">${e.specs}</p>
+    </div>
+  </div>`
+).join('');
+
+// NAV
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').style.background = window.scrollY > 80 ? 'rgba(26,26,26,0.99)' : 'rgba(26,26,26,0.96)';
+});
+
+// ANIMACIONES
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }});
+}, {threshold:0.06});
+document.querySelectorAll('.prop-card,.tip-card,.test-card,.proyecto-card,.exito-card,.market-stat,.oficina,.miembro').forEach(el => {
+  el.style.opacity='0'; el.style.transform='translateY(20px)';
+  el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
